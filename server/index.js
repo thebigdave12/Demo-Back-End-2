@@ -10,6 +10,17 @@ const app = express()
 app.use(express.json())
 app.use(cors())
 
+// include and initialize the rollbar library with your access token
+var Rollbar = require('rollbar')
+var rollbar = new Rollbar({
+  accessToken: 'eb802fbe3dbe4e80b2965e8f2bc09a2e',
+  captureUncaught: true,
+  captureUnhandledRejections: true,
+})
+
+// record a generic message and send it to Rollbar
+rollbar.log('Hello world!')
+
 // Step 4: Setup a place for our endpoints
 const {getAllMovies, deleteMovie, createMovie, updateMovie} = require('./controller')
 

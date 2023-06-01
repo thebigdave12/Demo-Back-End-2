@@ -1,10 +1,18 @@
 const movies = require('./db.json')
 
+var Rollbar = require('rollbar')
+var rollbar = new Rollbar({
+  accessToken: 'eb802fbe3dbe4e80b2965e8f2bc09a2e',
+  captureUncaught: true,
+  captureUnhandledRejections: true,
+})
+
 let globalId = 11
 
 module.exports = {
     // utilize/writing endpoint functions 
     getAllMovies: (req, res) => {
+        rollbar.log("new visitor to site")
         res.status(200).send(movies)
     },
 
@@ -58,8 +66,10 @@ module.exports = {
 
         if(type === 'plus' && movies[index].rating === 5) {
             res.status(400).send('Cannot go above 5')
+            rollbar.warn('User tried to go above 0 stars')
         } else if (type === 'minus' && movies[index].rating === 0) {
             res.status(400).send('Cannot go below 0')
+            rollbar.critical('User tried to go below 5 stars')
         } else if (type === 'plus') {
             movies[index].rating++
             res.status(200).send(movies)
